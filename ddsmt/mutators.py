@@ -177,8 +177,8 @@ def auto_detect_theories(exprs):
                 break
 
         if not enabled:
-            logging.warn(f'automatically disabling {name} mutators. '
-                         f'Use --{name} to use them.')
+            logging.warning(f'automatically disabling {name} mutators. '
+                            f'Use --{name} to use them.')
             toggle_theory(options.args(), name, False)
         else:
             logging.debug(f'keeping {name} mutators enabled')
