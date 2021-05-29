@@ -22,6 +22,7 @@
 import logging
 import os
 import sys
+import shutil
 import time
 
 from . import checker
@@ -57,12 +58,11 @@ def check_options():
     # check executable
     if not options.args().cmd:
         raise DDSMTException('No executable was specified as command')
-    if not os.path.isfile(options.args().cmd[0]):
-        raise DDSMTException('Command "{}" is not a regular file'.format(
+    resolved_cmd = shutil.which(options.args().cmd[0])
+    if resolved_cmd is None:
+        raise DDSMTException('Command "{}" is not an executable file'.format(
             options.args().cmd[0]))
-    if not os.access(options.args().cmd[0], os.X_OK):
-        raise DDSMTException('Command "{}" is not executable'.format(
-            options.args().cmd[0]))
+    options.args().cmd[0] = resolved_cmd
 
 
 def setup_logging():
