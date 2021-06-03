@@ -173,6 +173,28 @@ class RemoveAnnotation:
         return 'remove annotation'
 
 
+class RemoveRecursiveDefinition:
+    """Remove an entry from a set of recursive datatypes or functions."""
+    def filter(self, node):
+        return node.has_ident() and node.get_ident() in [
+            'declare-datatypes', 'define-funs-rec'
+        ]
+
+    def mutations(self, node):
+        head = node[0]
+        declarations = node[1]
+        definitions = node[2]
+        assert len(declarations) == len(definitions)
+        for i in range(len(declarations)):
+            decls = declarations[:i] + declarations[i + 1:]
+            defns = definitions[:i] + definitions[i + 1:]
+            new = Node(head, decls, defns)
+            yield Simplification({node.id: new}, [])
+
+    def __str__(self):
+        return 'remove recursive defintion'
+
+
 class SimplifyLogic:
     """Replace the logic specified in ``(check-logic ...)`` with a simpler one.
     """
@@ -293,6 +315,7 @@ def get_mutators():
         'LetElimination': 'let-elimination',
         'LetSubstitution': 'let-substitution',
         'RemoveAnnotation': 'remove-annotation',
+        'RemoveRecursiveDefinition': 'remove-recursive-definition',
         'SimplifyLogic': 'simplify-logic',
         'SimplifyQuotedSymbols': 'simplify-quoted-symbols',
         'SimplifySymbolNames': 'simplify-symbol-names',
