@@ -52,7 +52,7 @@ def check_options():
     if options.args().parser_test:
         # only parse and print
         exprs = list(nodeio.parse_smtlib(open(options.args().infile).read()))
-        print(nodeio.write_smtlib(sys.stdout, exprs))
+        nodeio.write_smtlib(sys.stdout, exprs)
         sys.exit(0)
 
     # check executable
